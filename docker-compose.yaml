@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+
+  allure:
+    image: "frankescobar/allure-docker-service"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+      KEEP_HISTORY: 1
+    networks:
+      - system
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-reports:/app/default-reports
+
+  test-runner:
+    container_name: test-runner
+    image: maven:3.8-jdk-8
+    environment:
+      - MAVEN_CONFIG=/var/maven/.m2
+    working_dir: /code
+    networks:
+      - system
+    volumes:
+      - .:/code
+      - ~/.m2:/var/maven/.m2
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+    command: /bin/sh
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    user: ${CURRENT_UID}
+
+networks:
+  system:
+    driver: bridge
+
