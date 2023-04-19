@@ -32,9 +32,6 @@ services:
       options:
         max-size: 50m
     command: /bin/sh
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    user: ${CURRENT_UID}
 
 networks:
   system:
